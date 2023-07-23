@@ -24,4 +24,4 @@ docs/
 *.lst
 
 # system ignore
-*.DS_Store
+.DS_Store
