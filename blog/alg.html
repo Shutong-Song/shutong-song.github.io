@@ -9,10 +9,9 @@
 <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
-<meta name="author" content="Simon, Shutong" />
 
 
-<title>Final Project Proposal</title>
+<title>Stack and Queue</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -362,202 +361,124 @@ pre code {
 
 
 
-<h1 class="title toc-ignore">Final Project Proposal</h1>
-<h3 class="subtitle">An interactive NYC taxi request App: exploratory
-data analysis</h3>
-<h4 class="author">Song, Shutong</h4>
-<h4 class="date">6/25/2021</h4>
+<h1 class="title toc-ignore">Stack and Queue</h1>
 
 </div>
 
 
-<div id="content" class="section level2">
-<h2>content</h2>
+<div id="stack" class="section level2">
+<h2>Stack</h2>
+<p>A stack is like a plate dispenser in a cafeteria, where the first
+inserted plate is always being on the top and used first. Last in first
+out (LIFO)</p>
+<div id="stack-implementation-with-c" class="section level3">
+<h3>stack implementation with C++</h3>
 <ol style="list-style-type: decimal">
-<li><p>load library</p></li>
-<li><p>data description</p>
-<ul>
-<li>data source
-<ul>
-<li>data is <a href="http://www.andresmh.com/nyctaxitrips/">2013 NYC
-taxi data</a></li>
-<li>there are 12 months data with each month separated</li>
-<li>I used the 2013 August data including the taxi trip and
-corresponding fare</li>
-<li>I also included the weather on Aug. 2013</li>
-<li><a href="https://github.com/toddwschneider/nyc-taxi-data/blob/master/data/central_park_weather.csv">NYC
-weather</a></li>
-</ul></li>
-<li>Goals
-<ul>
-<li>The question I’m interested is to design a NYC taxi request app
-which you can drop pins between your pickup location and drop off
-location.</li>
-<li>make a map interative app which user can specify pickup and drop off
-location, the app should then give the calculated shortest distance,
-estimated cost, and estimated time.</li>
-<li>provide for users to search the NYC traffic by taxi by hour, or see
-how weather would affect the taxi traffic.</li>
-<li>By utilizing the taxi data, it should be able to calculate the
-estimated time spend, the cost, and the shortest path with some extra
-information that provide you for your this trip (like weather).</li>
-</ul></li>
-<li>references
-<ul>
-<li><a href="https://www.earthdatascience.org/courses/earth-analytics/get-data-using-apis/leaflet-r/">Leaflet
-with R</a></li>
-<li><a href="https://rstudio.github.io/leaflet/shiny.html">Leaflet with
-Shiny</a></li>
-<li><a href="https://toddwschneider.com/posts/analyzing-1-1-billion-nyc-taxi-and-uber-trips-with-a-vengeance/">NYC
-Taxi and Uber trips</a></li>
-<li><a href="https://rpubs.com/Sharon_1684/451761">NYC taxi data trip
-analysis</a></li>
-<li><a href="https://github.com/streamlit/demo-uber-nyc-pickups">Uber
-pickups traffic tracking</a></li>
-<li><a href="https://www.r-graph-gallery.com/19-map-leafletr.html">interactive
-with R and Leaflet</a></li>
-<li><a href="https://rstudio.github.io/leaflet/markers.html">map
-Markers</a></li>
-</ul></li>
-<li>reference summary
-<ul>
-<li>the streamlit app seems good for visualization the pickup traffic in
-NYC with Python</li>
-<li>the Leaflet package in R can be used to create interactive map, and
-it allows integrate with R-shiny</li>
-<li>it also introduces many details of how to use Leaflet with R-shiny
-and showed examples of how to plot interactive map, how to make markers
-on map and so on.</li>
-</ul></li>
-<li>I haven’t worked with these data before, but I find its quite
-interesting and useful</li>
-<li>Potential application tool
-<ul>
-<li>some visualization would be: the map of NYC, 24 hours traffic based
-on taxi data, these visualization could help the user who use this app
-to decide when to request a taxi, or plan ahead based on the
-weather.</li>
-<li>dynamic controls include drop pins on maps, allow text box to input
-pickup and drop off location etc.</li>
-<li>search for NYC taxi traffic by hourly, or taxi cost with distance,
-etc.</li>
-</ul></li>
-</ul></li>
-<li><p>load data</p></li>
-<li><p>data basic statistics</p>
-<ul>
-<li>number of rows and columns of the data?
-<ul>
-<li>the trip data has 12597109 rows and 12 columns</li>
-<li>the fare data has the same rows and 9 columns</li>
-<li>to make the computation quicker, I randomly sampled 5000 for
-EDA</li>
-</ul></li>
-<li>name of the variables in the data?
-<ul>
-<li>the trip data has the following variables (most of the variables are
-self-explanatory)
-<ul>
-<li><code>vendor_id</code> the company that record these data</li>
-<li><code>rate_code</code> taximeter rate based on the location of NYC,
-see <a href="https://www1.nyc.gov/site/tlc/passengers/taxi-fare.page">detail</a></li>
-<li><code>store_and_fwd_flag</code> whether these trip message is stored
-in car and then forward to company</li>
-<li><code>pickup_datetime</code> datetime of trip pickup</li>
-<li><code>dropoff_datetime</code> datetime of trip dropoff</li>
-<li><code>passenger_count</code> how many passengers for the trip</li>
-<li><code>trip_time_in_secs</code> in seconds</li>
-<li><code>trip_distance</code> distance in miles</li>
-<li><code>pickup_longitude</code></li>
-<li><code>pickup_latititude</code></li>
-<li><code>dropoff_longitude</code></li>
-<li><code>dropoff_latitude</code></li>
-</ul></li>
-<li>the fare data has the following variables
-<ul>
-<li><code>vendor_id</code></li>
-<li><code>pickup_datetime</code></li>
-<li><code>payment_type</code> CSH (cash), CRD(card)</li>
-<li><code>fare_amount</code> the trip cost (USD)</li>
-<li><code>surcharge</code> extra charge made due to like rush hour,
-overnight surcharge (USD)</li>
-<li><code>mta_tax</code> Metropolitan commuter transportation mobility
-tax (USD)</li>
-<li><code>tip_amount</code> (USD)</li>
-<li><code>tolls amount</code> (USD)</li>
-<li><code>total_amount</code> added all the fare, surchage, tax, tip
-etc. (USD)</li>
-</ul></li>
-</ul></li>
-<li>what are the data types of the variable?
-<ul>
-<li>there are categorical like <code>vendor_id</code>,
-<code>payment_type</code></li>
-<li>datetime</li>
-<li>continous like fare, tax etc.</li>
-</ul></li>
-<li>how many missing values are there per variable?
-<ul>
-<li>the only missing values are some rows of trip data missing the
-<code>dropoff_longitude</code> and <code>dropoff_latitude</code></li>
-</ul></li>
-<li>how many unique values are there per variable?
-<ul>
-<li>the unique values of each variable can be seen in the cells</li>
-</ul></li>
-<li>merge taxi_trip and taxi_fare using the keys in the two tables.
-<ul>
-<li>using the two primary keys in each table <code>medallion</code> and
-<code>hack license</code>(not shown in this file)</li>
-</ul></li>
-</ul></li>
-<li><p>data cleasing</p></li>
-<li><p>select 6 variables for EDA (2 categorical and 4 continuous
-variable)</p>
-<ul>
-<li>why select the 6 variables for analysis?
-<ul>
-<li>these variables are the key parameters for design of my App</li>
-<li>for example: the <code>fare_amount</code> can be used to estimate
-the cost of a trip.</li>
-</ul></li>
-</ul></li>
-<li><p>EDA for each variable</p>
-<ol style="list-style-type: decimal">
-<li>barcharts for categorical variables
-<ul>
-<li><code>passenger_count</code>: values(0 - 8 with step of 1), there is
-only one trip for either group of 7 or 8</li>
-<li><code>payment_type</code>: values(cash, credit card, dispute,
-nocharge, unknown), cash and card payment are the dominant ones, the
-rest can be lumping together.</li>
-</ul></li>
-<li>eCDF and histogram plots for continuous variables
-<ul>
-<li><code>fare_amount</code> has 0th - 98th quantile are in range from 0
-to 50 dollars.</li>
-<li><code>trip_time_in_secs</code> has 0th - 98th quantile are in range
-from 0 to 2500 seconds.</li>
-<li><code>trip_distance</code> has 0th - 99th quantile are in range from
-0 to 20 miles.</li>
-<li><code>tip_amount</code> has 0th - 98th quantile are in range from 0
-to 10 dollars.</li>
-</ul></li>
-<li>interesting highlights of EDA
-<ul>
-<li>passengers who pay cash seems on average has short trip distance
-compare to payed with card</li>
-<li>passengers who payed with cash has tip = 0, it means their tip
-amount is not recorded, only card with tip can be recorded</li>
-<li>passengers count: the top three in all trips are 1, 2, 5 people</li>
-<li>fare amount: there is a large number of trips spend exactly $53 seen
-from the histogram of <code>fare_amount</code></li>
-<li>when passenger counts are either 1 or 3, the trip payed with card
-will tend to have longer distance and more fare amount compared with
-payed with cash</li>
-</ul></li>
-</ol></li>
+<li>implement with vector</li>
 </ol>
+<pre class="cpp"><code>#include &lt;iostream&gt;
+#include &lt;vector&gt;
+
+template&lt;class T&gt;
+class Stack
+{
+    private:
+        std::vector&lt;T&gt; arr;
+    public:
+        Stack(){}
+        ~Stack(){}
+        void push(T element)
+        {
+            arr.push_back(element);
+        }
+        void pop(T element)
+        {
+            arr.pop_back();
+        }
+        T peek()
+        {
+            T ele = arr.back();
+            return ele;
+        }
+        std::size_t size()
+        {
+            return arr.size();
+        }
+        bool empty()
+        {
+            return arr.size() == 0;
+        }
+};</code></pre>
+<ol start="2" style="list-style-type: decimal">
+<li>implement with array</li>
+</ol>
+<pre class="cpp"><code>#include &lt;iostream&gt;
+
+template&lt;class T&gt;
+class StackArr
+{
+    private:
+        int default_sz = 2;
+        T *arr = new T[default_sz];
+        std::size_t sz = 0;
+        void expand_arr(T *old)
+        {
+            T *newarr = new T[sz*2];
+            for(int i = 0; i &lt; sz; i++)
+                newarr[i] = old[i];
+            delete []old;
+            old = newarr;
+        }
+    public:
+        StackArr(){}
+        ~StackArr(){}
+        void push(T element)
+        {
+            if(sz == default_sz)
+                expand_arr(arr);
+            arr[++sz] = element;
+        }
+        void pop()
+        {
+            if(sz &lt;= 0)
+            {
+                std::cout &lt;&lt; &quot;stack is empty!&quot; &lt;&lt; std::endl;
+                return;
+            }
+            sz--;
+        }
+        T peek()
+        {
+            if(sz &lt;= 0)
+                throw std::runtime_error{&quot;stack is empty!!&quot;};
+            return arr[sz];
+        }
+        std::size_t size()
+        {
+            return sz;
+        }
+        bool empty()
+        {
+            return sz==0;
+        }
+        
+};</code></pre>
+</div>
+<div id="stack-related-problems" class="section level3">
+<h3>stack related problems</h3>
+<ol start="1614" style="list-style-type: decimal">
+<li>Maximum Nesting Depth of the Parentheses</li>
+<li>Remove Outermost Parentheses</li>
+</ol>
+</div>
+</div>
+<div id="queue" class="section level2">
+<h2>Queue</h2>
+<p>A queue is a line in a cafeteria, the first person in the line will
+get ordered first. First in first out (FIFO)</p>
+<div id="queue-related-problems" class="section level3">
+<h3>queue related problems</h3>
+</div>
 </div>
 
 
