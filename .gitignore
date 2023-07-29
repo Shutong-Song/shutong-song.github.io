@@ -25,3 +25,6 @@ docs/
 
 # system ignore
 .DS_Store
+
+#rmd file
+*.rmd
